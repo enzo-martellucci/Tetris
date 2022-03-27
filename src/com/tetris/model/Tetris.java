@@ -63,7 +63,17 @@ public class Tetris
 	// Public methods
 	public boolean moveD()
 	{
-		// TODO
+		boolean[][] structure = this.piece.getStructure();
+
+		for (int c = 0; c < structure[0].length; c++)
+			for (int l = structure.length - 1; l >= 0; l--)
+				if (structure[l][c])
+					if (this.grid[this.l + l + 1][this.c + c] != Type.VOID)
+						return this.place(l);
+					else
+						break;
+
+		this.l++;
 		return true;
 	}
 
@@ -74,7 +84,7 @@ public class Tetris
 		for (int l = 0; l < structure.length; l++)
 			for (int c = 0; c < structure[l].length; c++)
 				if (structure[l][c])
-					if (this.grid[this.l][this.c + c - 1] != Type.VOID)
+					if (this.grid[this.l + l][this.c + c - 1] != Type.VOID)
 						return false;
 					else
 						break;
@@ -89,7 +99,7 @@ public class Tetris
 		for (int l = 0; l < structure.length; l++)
 			for (int c = structure[l].length - 1; c >= 0; c--)
 				if (structure[l][c])
-					if (this.grid[this.l][this.c + c + 1] != Type.VOID)
+					if (this.grid[this.l + l][this.c + c + 1] != Type.VOID)
 						return false;
 					else
 						break;

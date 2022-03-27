@@ -42,11 +42,11 @@ public class ViewCUI
 	{
 		StringBuilder game = new StringBuilder();
 
-		// Adding the piece, and it's preview to the grid temporary
 		char[][]    grid      = this.tetris.getGrid();
 		boolean[][] structure = this.tetris.getPiece().getStructure();
 		char        type      = this.tetris.getPiece().getType();
 
+		// Adding the piece, and it's preview to the grid temporary
 		for (int l = 0; l < structure.length; l++)
 			for (int c = 0; c < structure[0].length; c++)
 				if (structure[l][c])
