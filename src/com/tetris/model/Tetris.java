@@ -62,17 +62,10 @@ public class Tetris
 	// Public methods
 	public boolean moveD()
 	{
-		if (this.l < this.maxL)
-		{
-			this.l++;
-			return true;
-		}
+		if (this.l == this.maxL)
+			return this.place();
 
-		boolean[][] structure = this.piece.getStructure();
-		for (int l = structure.length - 1; l >= 0; l--)
-			for (int c = 0; c < structure[l].length; c++)
-				if (structure[l][c])
-					return this.place(l);
+		this.l++;
 		return true;
 	}
 
@@ -166,16 +159,29 @@ public class Tetris
 				}
 	}
 
-	private boolean place(int collisionL)
+	private boolean place()
 	{
-		boolean[][] structure = this.piece.getStructure();
-		char        type      = this.piece.getType();
+		boolean[][] structure  = this.piece.getStructure();
+		char        type       = this.piece.getType();
+		int         collisionL = 0;
 
+		// Search the line of collision
+		collisionFound:
+		for (int l = structure.length - 1; l >= 0; l--)
+			for (int c = 0; c < structure[l].length; c++)
+				if (structure[l][c])
+				{
+					collisionL = l;
+					break collisionFound;
+				}
+
+		// "Printing" the piece on the grid
 		for (int l = 0; l < structure.length; l++)
 			for (int c = 0; c < structure[l].length; c++)
 				if (structure[l][c])
 					this.grid[this.l + l][this.c + c] = type;
 
+		// Loosing conditions
 		for (int l = SPAWN_L; l < SPAWN_L + 2; l++)
 			for (int c = SPAWN_C; c < SPAWN_C + 4; c++)
 				if (this.grid[l][c] != Type.VOID)
