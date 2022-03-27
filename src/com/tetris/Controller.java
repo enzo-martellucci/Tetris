@@ -29,7 +29,7 @@ public class Controller
 				case 'L' -> this.moveL();
 				case 'D' -> this.moveD();
 				case 'M' -> this.moveMaxD();
-				case 'T' -> this.viewCUI.notImplemented();
+				case 'T' -> this.turn();
 				case 'Q' -> this.viewCUI.quit();
 			}
 		}
@@ -57,6 +57,12 @@ public class Controller
 		else
 			System.out.println("Perdu");
 		return success;
+	}
+
+	private void turn()
+	{
+		if (this.tetris.turn())
+			this.viewCUI.showGame();
 	}
 
 	private void moveMaxD()

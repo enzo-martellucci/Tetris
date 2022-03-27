@@ -42,7 +42,12 @@ public class ViewCUI
 	{
 		StringBuilder game = new StringBuilder();
 
-		char[][]    grid      = this.tetris.getGrid();
+		char[][] original = this.tetris.getGrid();
+		char[][] copy     = new char[original.length][original[0].length];
+		for (int l = 0; l < original.length; l++)
+			for (int c = 0; c < original[0].length; c++)
+			     copy[l][c] = original[l][c];
+
 		boolean[][] structure = this.tetris.getPiece().getStructure();
 		char        type      = this.tetris.getPiece().getType();
 
@@ -50,20 +55,17 @@ public class ViewCUI
 		for (int l = 0; l < structure.length; l++)
 			for (int c = 0; c < structure[0].length; c++)
 				if (structure[l][c])
-					grid[l + this.tetris.getL()][c + this.tetris.getC()] = type; // = grid[l + this.tetris.getPreviewL()][c + this.tetris.getPreviewC()]
+				{
+					copy[l + this.tetris.getMaxL()][c + this.tetris.getC()] = Type.PREVIEW;
+					copy[l + this.tetris.getL()][c + this.tetris.getC()]    = type;
+				}
 
 		// Adding the game display
 		game.append('\n');
-		for (int l = 0; l < grid.length; l++, game.append('\n'))
-			for (int c = 0; c < grid[l].length; c++)
-			     game.append(grid[l][c]);
+		for (int l = 0; l < copy.length; l++, game.append('\n'))
+			for (int c = 0; c < copy[l].length; c++)
+			     game.append(copy[l][c]);
 		game.append('\n');
-
-		// Remove temporary piece and it's preview
-		for (int l = 0; l < structure.length; l++)
-			for (int c = 0; c < structure[0].length; c++)
-				if (structure[l][c])
-					grid[l + this.tetris.getL()][c + this.tetris.getC()] = Type.VOID; // = grid[l + this.tetris.getPreviewL()][c + this.tetris.getPreviewC()]
 
 		// Adding the queue
 		game.append("Queue : ");

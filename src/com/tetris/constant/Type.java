@@ -5,6 +5,7 @@ public final class Type
 	public static final char VOID     = '.';
 	public static final char WALL     = 'X';
 	public static final char WALL_INV = '!';
+	public static final char PREVIEW  = '+';
 
 	public static final char O = 'O';
 	public static final char I = 'I';

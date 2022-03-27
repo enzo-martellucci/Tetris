@@ -16,8 +16,8 @@ public class Tetris
 	private Piece piece;
 	private int   l;
 	private int   c;
-	private int   previewL;
-	private int   previewC;
+
+	private int maxL;
 
 
 	// Constructor
@@ -56,24 +56,23 @@ public class Tetris
 	public Piece getPiece()        { return this.piece; }
 	public int getL()              { return this.l; }
 	public int getC()              { return this.c; }
-	public int getPreviewL()       { return this.previewL; }
-	public int getPreviewC()       { return this.previewC; }
+	public int getMaxL()           { return this.maxL; }
 
 
 	// Public methods
 	public boolean moveD()
 	{
+		if (this.l < this.maxL)
+		{
+			this.l++;
+			return true;
+		}
+
 		boolean[][] structure = this.piece.getStructure();
-
-		for (int c = 0; c < structure[0].length; c++)
-			for (int l = structure.length - 1; l >= 0; l--)
+		for (int l = structure.length - 1; l >= 0; l--)
+			for (int c = 0; c < structure[l].length; c++)
 				if (structure[l][c])
-					if (this.grid[this.l + l + 1][this.c + c] != Type.VOID)
-						return this.place(l);
-					else
-						break;
-
-		this.l++;
+					return this.place(l);
 		return true;
 	}
 
@@ -88,7 +87,9 @@ public class Tetris
 						return false;
 					else
 						break;
+
 		this.c--;
+		this.calcMaxL();
 		return true;
 	}
 
@@ -103,14 +104,27 @@ public class Tetris
 						return false;
 					else
 						break;
+
 		this.c++;
+		this.calcMaxL();
 		return true;
 	}
 
 	public boolean turn()
 	{
-		// TODO
-		return false;
+		this.piece.turnR();
+		boolean[][] structure = this.piece.getStructure();
+
+		for (int l = 0; l < structure.length; l++)
+			for (int c = 0; c < structure[l].length; c++)
+				if (structure[l][c] && this.grid[this.l + l][this.c + c] != Type.VOID)
+				{
+					this.piece.turnL();
+					return false;
+				}
+
+		this.calcMaxL();
+		return true;
 	}
 
 
@@ -127,11 +141,29 @@ public class Tetris
 
 		if (this.queue.size() < 8)
 			this.queue.addAll(Piece.createBag());
+
+		this.calcMaxL();
 	}
 
-	private void calcPreview()
+	private void calcMaxL()
 	{
-		// TODO
+		boolean[][] structure = this.piece.getStructure();
+
+		this.maxL = Integer.MAX_VALUE;
+		int lTmp, cTmp;
+
+		for (int c = 0; c < structure[0].length; c++)
+			for (int l = structure.length - 1; l >= 0; l--)
+				if (structure[l][c])
+				{
+					lTmp = this.l + l;
+					cTmp = this.c + c;
+					while (this.grid[lTmp][cTmp] == Type.VOID)
+						lTmp++;
+					System.out.println(lTmp);
+					this.maxL = Math.min(this.maxL, lTmp - l - 1);
+					break;
+				}
 	}
 
 	private boolean place(int collisionL)
