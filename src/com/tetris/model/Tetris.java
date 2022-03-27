@@ -64,19 +64,37 @@ public class Tetris
 	public boolean moveD()
 	{
 		// TODO
-		return false;
-	}
-
-	public boolean moveR()
-	{
-		// TODO
-		return false;
+		return true;
 	}
 
 	public boolean moveL()
 	{
-		// TODO
-		return false;
+		boolean[][] structure = this.piece.getStructure();
+
+		for (int l = 0; l < structure.length; l++)
+			for (int c = 0; c < structure[l].length; c++)
+				if (structure[l][c])
+					if (this.grid[this.l][this.c + c - 1] != Type.VOID)
+						return false;
+					else
+						break;
+		this.c--;
+		return true;
+	}
+
+	public boolean moveR()
+	{
+		boolean[][] structure = this.piece.getStructure();
+
+		for (int l = 0; l < structure.length; l++)
+			for (int c = structure[l].length - 1; c >= 0; c--)
+				if (structure[l][c])
+					if (this.grid[this.l][this.c + c + 1] != Type.VOID)
+						return false;
+					else
+						break;
+		this.c++;
+		return true;
 	}
 
 	public boolean turn()
@@ -96,10 +114,35 @@ public class Tetris
 
 		if (this.piece.getType() == Type.O)
 			this.c++;
+
+		if (this.queue.size() < 8)
+			this.queue.addAll(Piece.createBag());
 	}
 
 	private void calcPreview()
 	{
 		// TODO
+	}
+
+	private boolean place(int collisionL)
+	{
+		boolean[][] structure = this.piece.getStructure();
+		char        type      = this.piece.getType();
+
+		for (int l = 0; l < structure.length; l++)
+			for (int c = 0; c < structure[l].length; c++)
+				if (structure[l][c])
+					this.grid[this.l + l][this.c + c] = type;
+
+		for (int l = SPAWN_L; l < SPAWN_L + 2; l++)
+			for (int c = SPAWN_C; c < SPAWN_C + 4; c++)
+				if (this.grid[l][c] != Type.VOID)
+					return false;
+
+		if (this.l + collisionL < 3)
+			return false;
+
+		this.pullPiece();
+		return true;
 	}
 }

@@ -29,6 +29,7 @@ public class ViewCUI
 		System.out.println("[R] Move right");
 		System.out.println("[L] Move left");
 		System.out.println("[D] Move down");
+		System.out.println("[M] Move max down");
 		System.out.println("[T] Turn");
 		System.out.println("[Q] Quit");
 		System.out.println();
@@ -57,7 +58,6 @@ public class ViewCUI
 			for (int c = 0; c < grid[l].length; c++)
 			     game.append(grid[l][c]);
 		game.append('\n');
-		game.append('\n');
 
 		// Remove temporary piece and it's preview
 		for (int l = 0; l < structure.length; l++)
@@ -72,6 +72,7 @@ public class ViewCUI
 			game.append(p.getType());
 			game.append(' ');
 		}
+		game.append('\n');
 
 		// Display
 		System.out.println(game.toString());
