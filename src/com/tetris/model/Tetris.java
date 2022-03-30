@@ -153,7 +153,6 @@ public class Tetris
 					cTmp = this.c + c;
 					while (this.grid[lTmp][cTmp] == Type.VOID)
 						lTmp++;
-					System.out.println(lTmp);
 					this.maxL = Math.min(this.maxL, lTmp - l - 1);
 					break;
 				}
@@ -165,6 +164,12 @@ public class Tetris
 		char        type       = this.piece.getType();
 		int         collisionL = 0;
 
+		// "Printing" the piece on the grid
+		for (int l = 0; l < structure.length; l++)
+			for (int c = 0; c < structure[l].length; c++)
+				if (structure[l][c])
+					this.grid[this.l + l][this.c + c] = type;
+
 		// Search the line of collision
 		collisionFound:
 		for (int l = structure.length - 1; l >= 0; l--)
@@ -175,12 +180,6 @@ public class Tetris
 					break collisionFound;
 				}
 
-		// "Printing" the piece on the grid
-		for (int l = 0; l < structure.length; l++)
-			for (int c = 0; c < structure[l].length; c++)
-				if (structure[l][c])
-					this.grid[this.l + l][this.c + c] = type;
-
 		// Loosing conditions
 		for (int l = SPAWN_L; l < SPAWN_L + 2; l++)
 			for (int c = SPAWN_C; c < SPAWN_C + 4; c++)
@@ -190,7 +189,14 @@ public class Tetris
 		if (this.l + collisionL < 3)
 			return false;
 
+		// If not loose
+		this.clearFull();
 		this.pullPiece();
 		return true;
+	}
+
+	private void clearFull()
+	{
+		
 	}
 }

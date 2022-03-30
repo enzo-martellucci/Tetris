@@ -4,10 +4,31 @@ import com.tetris.constant.Type;
 import com.tetris.model.Piece;
 import com.tetris.model.Tetris;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ViewCUI
 {
+	// Constants
+	private static final String                 RESET      = "\u001B[0m";
+	private static final Map<Character, String> TYPE_COLOR = new HashMap<>();
+
+	static
+	{
+		TYPE_COLOR.put(Type.VOID, "\u001B[0m");
+		TYPE_COLOR.put(Type.WALL, "\u001B[40m");
+		TYPE_COLOR.put(Type.WALL_INV, "\u001B[47m");
+		TYPE_COLOR.put(Type.PREVIEW, "\u001B[47m");
+		TYPE_COLOR.put(Type.O, "\u001B[43m");
+		TYPE_COLOR.put(Type.I, "\u001B[44m");
+		TYPE_COLOR.put(Type.T, "\033[0;105m");
+		TYPE_COLOR.put(Type.L, "\u001B[46m");
+		TYPE_COLOR.put(Type.J, "\u001B[45m");
+		TYPE_COLOR.put(Type.S, "\u001B[42m");
+		TYPE_COLOR.put(Type.Z, "\u001B[41m");
+	}
+
 	// Attributes
 	private Tetris  tetris;
 	private Scanner input;
@@ -62,21 +83,30 @@ public class ViewCUI
 
 		// Adding the game display
 		game.append('\n');
-		for (int l = 0; l < copy.length; l++, game.append('\n'))
+
+		StringBuilder lineBuilder = new StringBuilder();
+		lineBuilder.append('+');
+		for (int c = 0; c < copy[0].length; c++)
+		     lineBuilder.append("-+");
+		lineBuilder.append("\n|");
+		String line = lineBuilder.toString();
+
+		game.append(line);
+		for (int l = 0; l < copy.length; l++, game.append('\n'), game.append(line.toString()))
 			for (int c = 0; c < copy[l].length; c++)
-			     game.append(copy[l][c]);
-		game.append('\n');
+			     game.append(String.format("%s %s|", TYPE_COLOR.get(copy[l][c]), RESET));
 
 		// Adding the queue
+		game.append('\n');
 		game.append("Queue : ");
 		for (Piece p : this.tetris.getQueue())
 		{
 			game.append(p.getType());
 			game.append(' ');
 		}
-		game.append('\n');
 
 		// Display
+		game.append('\n');
 		System.out.println(game.toString());
 	}
 
