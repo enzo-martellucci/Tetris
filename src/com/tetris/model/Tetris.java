@@ -1,11 +1,10 @@
 package com.tetris.model;
 
-import com.tetris.constant.Type;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
 import static com.tetris.constant.Parameter.*;
+import static com.tetris.constant.Type.*;
 
 public class Tetris
 {
@@ -28,17 +27,17 @@ public class Tetris
 
 		for (int l = 0; l < this.grid.length; l++)
 			for (int c = 0; c < this.grid[0].length; c++)
-			     this.grid[l][c] = Type.VOID;
+			     this.grid[l][c] = VOID;
 
 		for (int l = 0; l < this.grid.length; l++)
-		     this.grid[l][0] = this.grid[l][WIDTH - 1] = Type.WALL;
+		     this.grid[l][0] = this.grid[l][WIDTH - 1] = WALL;
 
 		for (int c = 0; c < this.grid[0].length; c++)
-		     this.grid[HEIGHT - 1][c] = Type.WALL;
+		     this.grid[HEIGHT - 1][c] = WALL;
 
-		this.grid[0][0] = this.grid[0][WIDTH - 1] = Type.WALL_INV;
-		this.grid[1][0] = this.grid[1][WIDTH - 1] = Type.WALL_INV;
-		this.grid[2][0] = this.grid[2][WIDTH - 1] = Type.WALL_INV;
+		this.grid[0][0] = this.grid[0][WIDTH - 1] = WALL_INV;
+		this.grid[1][0] = this.grid[1][WIDTH - 1] = WALL_INV;
+		this.grid[2][0] = this.grid[2][WIDTH - 1] = WALL_INV;
 
 		// Init the piece queue
 		this.queue = new LinkedList<>();
@@ -76,7 +75,7 @@ public class Tetris
 		for (int l = 0; l < structure.length; l++)
 			for (int c = 0; c < structure[l].length; c++)
 				if (structure[l][c])
-					if (this.grid[this.l + l][this.c + c - 1] != Type.VOID)
+					if (this.grid[this.l + l][this.c + c - 1] != VOID)
 						return false;
 					else
 						break;
@@ -93,7 +92,7 @@ public class Tetris
 		for (int l = 0; l < structure.length; l++)
 			for (int c = structure[l].length - 1; c >= 0; c--)
 				if (structure[l][c])
-					if (this.grid[this.l + l][this.c + c + 1] != Type.VOID)
+					if (this.grid[this.l + l][this.c + c + 1] != VOID)
 						return false;
 					else
 						break;
@@ -110,7 +109,7 @@ public class Tetris
 
 		for (int l = 0; l < structure.length; l++)
 			for (int c = 0; c < structure[l].length; c++)
-				if (structure[l][c] && this.grid[this.l + l][this.c + c] != Type.VOID)
+				if (structure[l][c] && this.grid[this.l + l][this.c + c] != VOID)
 				{
 					this.piece.turnL();
 					return false;
@@ -129,7 +128,7 @@ public class Tetris
 		this.l = SPAWN_L;
 		this.c = SPAWN_C;
 
-		if (this.piece.getType() == Type.O)
+		if (this.piece.getType() == O)
 			this.c++;
 
 		if (this.queue.size() < 8)
@@ -151,7 +150,7 @@ public class Tetris
 				{
 					lTmp = this.l + l;
 					cTmp = this.c + c;
-					while (this.grid[lTmp][cTmp] == Type.VOID)
+					while (this.grid[lTmp][cTmp] == VOID)
 						lTmp++;
 					this.maxL = Math.min(this.maxL, lTmp - l - 1);
 					break;
@@ -183,7 +182,7 @@ public class Tetris
 		// Loosing conditions
 		for (int l = SPAWN_L; l < SPAWN_L + 2; l++)
 			for (int c = SPAWN_C; c < SPAWN_C + 4; c++)
-				if (this.grid[l][c] != Type.VOID)
+				if (this.grid[l][c] != VOID)
 					return false;
 
 		if (this.l + collisionL < 3)
@@ -197,6 +196,33 @@ public class Tetris
 
 	private void clearFull()
 	{
+		int     fullL      = 0;
+		boolean fullLFound = false;
+
+		// Search for the last full line if exist
+		for (int l = 0; l < this.grid.length - 1; l++)
+		{
+			fullLFound = true;
+			notFull:
+			for (int c = 1; c < this.grid[l].length - 1; c++)
+				if (this.grid[l][c] == VOID)
+				{
+					fullLFound = false;
+					break notFull;
+				}
+
+			if (fullLFound)
+				fullL = l;
+		}
+
+		if (!fullLFound)
+			return;
 		
+		// Shift the grid down
+		for (int l = fullL; l > 0; l--)
+			for (int c = 1; c < this.grid[l].length - 1; c++)
+			     this.grid[l][c] = this.grid[l - 1][c];
+
+		this.clearFull();
 	}
 }

@@ -95,6 +95,7 @@ public class ViewCUI
 		for (int l = 0; l < copy.length; l++, game.append('\n'), game.append(line.toString()))
 			for (int c = 0; c < copy[l].length; c++)
 			     game.append(String.format("%s %s|", TYPE_COLOR.get(copy[l][c]), RESET));
+		game.deleteCharAt(game.length() - 1);
 
 		// Adding the queue
 		game.append('\n');
